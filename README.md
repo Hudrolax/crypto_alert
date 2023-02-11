@@ -36,8 +36,15 @@ docker-compose -f docker-compose-deploy.yml up -d
 ```
 
 ## Usage:
-Administer alerts via admin panel http://app-host/admin:
+### Administer alerts:
+via admin panel http://app-host/admin:
+
 ![Alt text](docs/admin.png?raw=true "Admin panel")
 
 or via REST API http://app-host/api/docs
+
 ![Alt text](docs/docs.png?raw=true "API Docks")
+
+### Control tasks via Flower dashboard (http://app-host/flower)
+
+![Alt text](docs/flower.png?raw=true "Flower dashboard")
