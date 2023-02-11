@@ -14,15 +14,21 @@ services:
     command: >
       sh -c "python manage.py wait_for_db &&
              python manage.py migrate &&
+             python manage.py add_core_settings &&
              python manage.py runserver 0.0.0.0:8000"
     environment:
-      - DB_HOST=db
-      - DB_NAME=devdb
-      - DB_USER=devuser
-      - DB_PASS=changeme
-      - REDIS_HOST=redis 
-      - REDIS_PORT=6379
-      - DEBUG=1
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     depends_on:
       - db
       - redis
@@ -32,9 +38,9 @@ services:
     volumes:
       - dev-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=devdb
-      - POSTGRES_USER=devuser
-      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
 
   redis:
     image: redis:7-alpine
@@ -48,13 +54,18 @@ services:
       - ./app:/app
     command: celery -A app worker -l info
     environment:
-      - DB_HOST=db
-      - DB_NAME=devdb
-      - DB_USER=devuser
-      - DB_PASS=changeme
-      - REDIS_HOST=redis 
-      - REDIS_PORT=6379
-      - DEBUG=1
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     depends_on:
       - db
       - redis
@@ -66,15 +77,20 @@ services:
         - DEV=true
     volumes:
       - ./app:/app
-    command: celery -A app beat -l info 
+    command: celery -A app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler 
     environment:
-      - DB_HOST=db
-      - DB_NAME=devdb
-      - DB_USER=devuser
-      - DB_PASS=changeme
-      - REDIS_HOST=redis 
-      - REDIS_PORT=6379
-      - DEBUG=1
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     depends_on:
       - db
       - redis
@@ -88,13 +104,18 @@ services:
       - ./app:/app
     command: celery --broker=redis://redis:6379 flower 
     environment:
-      - DB_HOST=db
-      - DB_NAME=devdb
-      - DB_USER=devuser
-      - DB_PASS=changeme
-      - REDIS_HOST=redis 
-      - REDIS_PORT=6379
-      - DEBUG=1
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     ports:
     - 5557:5555
     depends_on:

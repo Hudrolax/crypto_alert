@@ -11,7 +11,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ['email', 'name']
     fieldsets = (
         (None, {
-            'fields': ('email', 'password')
+            'fields': ('email', 'password', 'telegram_id')
         }),
         (_('Personal Info'), {
             'fields': ('name', )
@@ -35,6 +35,7 @@ class UserAdmin(BaseUserAdmin):
             'password1',
             'password2',
             'name',
+            'telegram_id',
             'is_active',
             'is_staff',
             'is_superuser',
@@ -45,3 +46,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Alert)
 admin.site.register(models.Symbol)
+admin.site.register(models.CoreSettings)

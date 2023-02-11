@@ -43,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """User in the system."""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    telegram_id = models.CharField(max_length=12, default='')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -83,3 +84,9 @@ class Alert(models.Model):
     
     def __str__(self) -> str:
         return self.title
+
+class CoreSettings(models.Model):
+    """Core settings model"""
+    update_last_prices = models.BooleanField(default=True, verbose_name='Update last price') 
+    send_alert_via_telegram = models.BooleanField(default=True, verbose_name=' Send alerts via Telegram')
+    send_alert_via_email = models.BooleanField(default=True, verbose_name='Send alerts via E-mail')

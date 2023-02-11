@@ -31,6 +31,7 @@ class PublicUserApiTests(TestCase):
             'email': 'test@example.com',
             'password': 'test1234',
             'name': 'Test name',
+            'telegram_id': '123456789'
         }
         # make a post request
         res = self.client.post(CREATE_USER_URL, payload)
@@ -137,9 +138,11 @@ class PrivateUserApiTests(TestCase):
         payload = {
             'name': 'Updated username',
             'password': 'newpassword1234',
+            'telegram_id': '999999999'
         }
         res = self.client.patch(ME_URL, payload)
         self.user.refresh_from_db()
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
+        self.assertTrue(self.user.telegram_id, payload['telegram_id'])
         self.assertEqual(res.status_code, status.HTTP_200_OK)

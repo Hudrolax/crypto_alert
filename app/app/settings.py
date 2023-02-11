@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from celery.schedules import crontab
-# import core.tasks
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'django_celery_beat',
     'user',
     'alert',
 ]
@@ -162,8 +163,12 @@ CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 
 CELERY_BEAT_SCHEDULE = {
-    "sample_task": {
+    "get_last_prices": {
         "task": "core.tasks.get_and_save_last_prices",
         "schedule": crontab(minute="*/1"),
+    },
+    "send_alerts": {
+        "task": "core.tasks.send_alerts",
+        "schedule": timedelta(seconds=30),
     },
 }
