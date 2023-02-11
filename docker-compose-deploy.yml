@@ -6,16 +6,24 @@ services:
       context: .
     restart: always
     volumes:
+      - ./app:/app
       - static-data:/vol/web
     environment:
-      - DB_HOST=db
+      - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
-      - SECRET_KEY=${DJANGO_SECRET_KEY}
-      - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:13-alpine
@@ -26,6 +34,86 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
+  
+  redis:
+    image: redis:7-alpine
+    restart: always
+  
+  celery_worker:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - ./app:/app
+      - static-data:/vol/web
+    command: celery -A app worker -l info
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    depends_on:
+      - db
+      - redis
+
+  celery_beat:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - ./app:/app
+      - static-data:/vol/web
+    command: celery -A app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler 
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    depends_on:
+      - db
+      - redis
+
+  flower:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+      - static-data:/static
+    command: celery --broker=redis://redis:6379 flower --url-prefix=flower 
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - REDIS_HOST=${REDIS_HOST} 
+      - REDIS_PORT=${REDIS_PORT}
+      - DEBUG=${DEBUG}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
+      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    ports:
+    - 5555:5555
+    depends_on:
+      - db
+      - redis
 
   proxy:
     build:

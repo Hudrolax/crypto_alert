@@ -10,4 +10,9 @@ server {
     include               /etc/nginx/uwsgi_params;
     client_max_body_size  10M;
   }
+
+  location /flower {
+    proxy_pass http://flower:5555/flower;
+    proxy_buffering off;
+  }
 }
