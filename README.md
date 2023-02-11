@@ -36,4 +36,8 @@ docker-compose -f docker-compose-deploy.yml up -d
 ```
 
 ## Usage:
-- Administer alerts via admin panel http://app-host/admin or via REST API http://app-host/api/docs
+Administer alerts via admin panel http://app-host/admin:
+![Alt text](docs/admin.png?raw=true "Admin panel")
+
+or via REST API http://app-host/api/docs
+![Alt text](docs/docs.png?raw=true "API Docks")
