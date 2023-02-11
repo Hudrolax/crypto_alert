@@ -25,16 +25,15 @@ docker-compose -f docker-compose-deploy.yml build
 ```
 docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
 ```
-5. Create superuser:
+5. Run the app:
+```
+docker-compose -f docker-compose-deploy.yml up -d
+```
+6. Create superuser:
 ```
 docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py wait_for_db && python manage.py createsuperuser"
 ```
 and fill e-mail and password
-
-6. Run the app:
-```
-docker-compose -f docker-compose-deploy.yml up -d
-```
 
 ## Usage:
 ### Administer alerts:
@@ -46,6 +45,6 @@ or via REST API http://app-host/api/docs
 
 ![Alt text](docs/docs.png?raw=true "API Docks")
 
-### Control tasks via Flower dashboard (http://app-host/flower)
+### Control tasks via Flower dashboard (http://app-host/flower/)
 
 ![Alt text](docs/flower.png?raw=true "Flower dashboard")
