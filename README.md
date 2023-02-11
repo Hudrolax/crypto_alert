@@ -30,6 +30,7 @@ docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py
 docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py wait_for_db && python manage.py createsuperuser"
 ```
 and fill e-mail and password
+
 6. Run the app:
 ```
 docker-compose -f docker-compose-deploy.yml up -d
