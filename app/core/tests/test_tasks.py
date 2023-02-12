@@ -27,9 +27,12 @@ class TasksTest(TestCase):
     def test_get_and_save_last_price(self):
         """Test get and save last price for symbols"""
         symbol = models.Symbol.objects.create(name='BTCUSDT')
+        symbol2 = models.Symbol.objects.create(name='CFXBTC')
         get_and_save_last_prices()
         symbol.refresh_from_db()
+        symbol2.refresh_from_db()
         self.assertNotEqual(symbol.last_price, Decimal('0'))
+        self.assertNotEqual(symbol2.last_price, Decimal('0'))
 
     def test_send_alerts(self):
         """Test send alert"""

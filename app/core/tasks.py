@@ -2,7 +2,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from core.models import Symbol, Alert, CoreSettings
-from core.binance import get_last_price
+from core.binance_api import get_last_price
 from core.telegram_bot import send_message as send_telegram_message 
 from core.send_email import Mail
 

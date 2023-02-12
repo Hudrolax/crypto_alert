@@ -106,7 +106,7 @@ services:
   
   flower:
     build:
-      context: .
+      context: ./app/flower
       args:
         - DEV=true
     volumes:

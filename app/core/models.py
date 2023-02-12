@@ -54,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Symbol(models.Model):
     """Symbol object"""
-    name = models.CharField(max_length=15)
+    name = models.CharField(max_length=15, unique=True)
     last_price = models.DecimalField(max_digits=15, decimal_places=8, default=Decimal('0'))
 
     def __str__(self) -> str:

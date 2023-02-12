@@ -29,14 +29,17 @@ class PriceFieldSerializer(serializers.Field):
 class SymbolSerializer(serializers.ModelSerializer):
     """Serializer for symbols"""
 
+    last_price = PriceFieldSerializer() 
+
     class Meta:
         model = Symbol
         fields = [
             'id',
             'name',
+            'last_price',
         ]
         read_only_fileds = ['id']
-
+    
 
 class AlertSerializer(serializers.ModelSerializer):
     """Serializer for alerts"""

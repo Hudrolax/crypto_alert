@@ -91,6 +91,7 @@ class PrivateSymbolAPITests(TestCase):
         """Test creating a symbol via API"""
         payload = {
             'name': 'BTCUSDT',
+            'last_price': Decimal('0'),
         }
         res = self.client.post(SYMBOLS_URL, payload)
 
