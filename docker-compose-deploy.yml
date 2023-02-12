@@ -112,7 +112,7 @@ services:
       - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     ports:
-    - 5555:5555
+      - 5555:5555
     depends_on:
       - db
       - redis
