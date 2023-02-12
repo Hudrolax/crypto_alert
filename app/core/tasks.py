@@ -4,7 +4,7 @@ from celery.utils.log import get_task_logger
 from core.models import Symbol, Alert, CoreSettings
 from core.binance_api import get_last_price
 from core.telegram_bot import send_message as send_telegram_message 
-from core.send_email import Mail
+from core.send_email import send_mail
 from binance.spot import Spot
 
 
@@ -29,8 +29,6 @@ def send_alerts() -> None:
     """Send alert to users"""
     core_settings = CoreSettings.objects.get()
     alerts = Alert.objects.filter(is_active=True)
-    if len(alerts) > 0 and core_settings.send_alert_via_email:
-        mail = Mail()
 
     def send_alert(alert, message) -> None:
         alert_sended = False
@@ -38,7 +36,7 @@ def send_alerts() -> None:
             if send_telegram_message(alert.user.telegram_id, message):
                 alert_sended = True
         if core_settings.send_alert_via_email:
-            if alert.user.telegram_id == 'test' or mail.send(
+            if alert.user.telegram_id == 'test' or send_mail.send(
                 emails=[alert.user.email], 
                 subject='Crypto alert!',
                 content=message,
