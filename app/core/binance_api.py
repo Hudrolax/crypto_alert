@@ -1,4 +1,3 @@
-from binance.spot import Spot
 from decimal import Decimal
 from celery.utils.log import get_task_logger
 
@@ -6,9 +5,7 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 
-client = Spot()
-
-def get_last_price(symbol: str) -> Decimal:
+def get_last_price(client, symbol: str) -> Decimal:
     """Get last price for symbol"""
     try:
         response = client.ticker_price(symbol)

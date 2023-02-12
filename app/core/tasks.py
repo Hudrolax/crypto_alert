@@ -5,6 +5,7 @@ from core.models import Symbol, Alert, CoreSettings
 from core.binance_api import get_last_price
 from core.telegram_bot import send_message as send_telegram_message 
 from core.send_email import Mail
+from binance.spot import Spot
 
 
 logger = get_task_logger(__name__)
@@ -16,10 +17,11 @@ def get_and_save_last_prices() -> None:
     core_settings = CoreSettings.objects.get()
     if not core_settings.update_last_prices:
         return
+    client = Spot()
 
     symbols = Symbol.objects.all()
     for symbol in symbols:
-        symbol.last_price = get_last_price(symbol.name)
+        symbol.last_price = get_last_price(client, symbol.name)
         symbol.save()
 
 @shared_task
