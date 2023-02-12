@@ -78,8 +78,9 @@ class SymbolViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.SymbolSerializer
     queryset = Symbol.objects.all()
-    # authentication_classes = []
-    # permission_classes = []
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Retrieve symbols for authenticated user."""

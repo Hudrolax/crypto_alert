@@ -59,7 +59,21 @@ class PublicSymbolAPITests(TestCase):
 
     def setUp(self) -> None:
         self.client = APIClient()
+    
+    def test_auth_required(self) -> None:
+        """Test auth required to call API."""
+        res = self.client.get(SYMBOLS_URL)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
+class PrivateSymbolAPITests(TestCase):
+    """Tests authenticated API requests."""
+
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = create_user(email='user@example.com', password='testpas14')
+        self.client.force_authenticate(self.user)
+    
     def test_retrieve_symbols(self) -> None:
         """Test retieving a list of symbols."""
         create_symbol()
@@ -72,14 +86,6 @@ class PublicSymbolAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)  # type: ignore
-
-class PrivateSymbolAPITests(TestCase):
-    """Tests authenticated API requests."""
-
-    def setUp(self) -> None:
-        self.client = APIClient()
-        self.user = create_user(email='user@example.com', password='testpas14')
-        self.client.force_authenticate(self.user)
 
     def test_create_symbol(self) -> None:
         """Test creating a symbol via API"""

@@ -9,6 +9,8 @@ services:
       - ./app:/app
       - static-data:/vol/web
     environment:
+      - DEBUG=${DEBUG}
+      - APP_URL=${APP_URL}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DB_HOST=${DB_HOST}
@@ -17,7 +19,6 @@ services:
       - DB_PASS=${DB_PASS}
       - REDIS_HOST=${REDIS_HOST} 
       - REDIS_PORT=${REDIS_PORT}
-      - DEBUG=${DEBUG}
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - EMAIL_SERVER=${EMAIL_SERVER}
       - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
@@ -50,13 +51,16 @@ services:
       - static-data:/vol/web
     command: celery -A app worker -l info
     environment:
+      - DEBUG=${DEBUG}
+      - APP_URL=${APP_URL}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - REDIS_HOST=${REDIS_HOST} 
       - REDIS_PORT=${REDIS_PORT}
-      - DEBUG=${DEBUG}
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - EMAIL_SERVER=${EMAIL_SERVER}
       - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
@@ -75,13 +79,16 @@ services:
       - static-data:/vol/web
     command: celery -A app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler 
     environment:
+      - DEBUG=${DEBUG}
+      - APP_URL=${APP_URL}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - REDIS_HOST=${REDIS_HOST} 
       - REDIS_PORT=${REDIS_PORT}
-      - DEBUG=${DEBUG}
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - EMAIL_SERVER=${EMAIL_SERVER}
       - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
@@ -93,24 +100,11 @@ services:
 
   flower:
     build:
-      context: .
+      context: ./app/flower
     volumes:
       - ./app:/app
       - static-data:/static
-    command: celery --broker=redis://redis:6379 flower --url-prefix=flower 
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - REDIS_HOST=${REDIS_HOST} 
-      - REDIS_PORT=${REDIS_PORT}
-      - DEBUG=${DEBUG}
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
-      - EMAIL_SERVER=${EMAIL_SERVER}
-      - EMAIL_SERVER_PORT=${EMAIL_SERVER_PORT}
-      - EMAIL_ACCOUNT=${EMAIL_ACCOUNT}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    command: celery --broker=redis://redis:6379 flower --url-prefix=${APP_URL}flower 
     ports:
       - 5555:5555
     depends_on:
@@ -121,10 +115,12 @@ services:
     build:
       context: ./proxy
     restart: always
+    environment:
+      - APP_URL=${APP_URL}
     depends_on:
       - app
     ports:
-      - 80:8000
+      - 80:80
     volumes:
       - static-data:/vol/static
 

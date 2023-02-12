@@ -21,17 +21,22 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+import os
+
+app_path = os.environ.get('APP_URL', '')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
-    path(
-        'api/docs/',
-        SpectacularSwaggerView.as_view(url_name='api-schema'),
-        name='api-docs',
-    ),
-    path('api/user/', include('user.urls')),
-    path('api/alert/', include('alert.urls')),
+    path(app_path, include([
+        path('admin/', admin.site.urls),
+        path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
+        path(
+            'api/docs/',
+            SpectacularSwaggerView.as_view(url_name='api-schema'),
+            name='api-docs',
+        ),
+        path('api/user/', include('user.urls')),
+        path('api/alert/', include('alert.urls')),
+    ]))
 ]
 
 if settings.DEBUG:

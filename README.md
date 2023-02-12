@@ -17,19 +17,11 @@ The application is designed to monitor the price of cryptocurrencies and send al
 ## Install (Docker compose):
 1. Clone the repository
 2. Make .env file (copy .env-example) and fill it right
-3. Build containers:
-```
-docker-compose -f docker-compose-deploy.yml build
-```
-4. Migrate data:
-```
-docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
-```
-5. Run the app:
+3. Run the app:
 ```
 docker-compose -f docker-compose-deploy.yml up -d
 ```
-6. Create superuser:
+4. Create superuser:
 ```
 docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py wait_for_db && python manage.py createsuperuser"
 ```
@@ -37,14 +29,14 @@ and fill e-mail and password
 
 ## Usage:
 ### Administer alerts:
-via admin panel http://app-host/admin:
+via admin panel http://app-url/admin/:
 
 ![Alt text](docs/admin.png?raw=true "Admin panel")
 
-or via REST API http://app-host/api/docs
+or via REST API http://app-url/api/docs
 
 ![Alt text](docs/docs.png?raw=true "API Docks")
 
-### Control tasks via Flower dashboard (http://app-host/flower/)
+### Control tasks via Flower dashboard (http://app-url/flower/)
 
 ![Alt text](docs/flower.png?raw=true "Flower dashboard")

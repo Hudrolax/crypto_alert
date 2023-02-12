@@ -5,14 +5,15 @@ server {
     alias /vol/static;
   }
 
-  location /alerts {
+  location / {
     uwsgi_pass            ${APP_HOST}:${APP_PORT}; 
     include               /etc/nginx/uwsgi_params;
     client_max_body_size  10M;
   }
 
-  location /flower {
-    proxy_pass http://flower:5555/flower;
+  location /${APP_URL}flower {
+    proxy_pass http://flower:5555/${APP_URL}flower;
     proxy_buffering off;
   }
+
 }
