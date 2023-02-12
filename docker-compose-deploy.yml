@@ -101,6 +101,7 @@ services:
   flower:
     build:
       context: ./app/flower
+    restart: always
     volumes:
       - ./app:/app
       - static-data:/static
