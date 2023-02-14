@@ -29,7 +29,7 @@ class PriceFieldSerializer(serializers.Field):
 class SymbolSerializer(serializers.ModelSerializer):
     """Serializer for symbols"""
 
-    last_price = PriceFieldSerializer() 
+    last_price = PriceFieldSerializer()
 
     class Meta:
         model = Symbol
@@ -39,7 +39,13 @@ class SymbolSerializer(serializers.ModelSerializer):
             'last_price',
         ]
         read_only_fileds = ['id']
-    
+
+    def create(self, validated_data):
+        """Override create method."""
+        validated_data['name'] = validated_data['name'].upper()
+        symbol = Symbol.objects.create(**validated_data)
+        return symbol
+
 
 class AlertSerializer(serializers.ModelSerializer):
     """Serializer for alerts"""

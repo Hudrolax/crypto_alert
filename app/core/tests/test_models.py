@@ -65,7 +65,7 @@ class ModelTests(TestCase):
 
         # symbol = models.Symbol.objects.filter(symbol='BTCUSDT')
         # if len(symbol) == 0:
-        symbol = models.Symbol.objects.create(name='BTCUSDT')
+        symbol = models.Symbol.objects.create(name='DOGEBTC')
 
         alert = models.Alert.objects.create(
             user=user,

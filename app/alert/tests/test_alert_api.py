@@ -32,12 +32,12 @@ def symbol_detail_url(symbol_id) -> str:
 
 def create_symbol(**params) -> Symbol:
     """Create and return a simple symbol"""
-    return Symbol.objects.create(name='BTCUSDT')
+    return Symbol.objects.create(**params)
 
 
 def create_alert(user, **params) -> Alert:
     """Create and return a simple alert"""
-    symbol = Symbol.objects.create()
+    symbol, _ = Symbol.objects.get_or_create(name='BTCUSDT')
     defaults = {
         'symbol': symbol,
         'price': Decimal('25000'),
@@ -76,8 +76,8 @@ class PrivateSymbolAPITests(TestCase):
     
     def test_retrieve_symbols(self) -> None:
         """Test retieving a list of symbols."""
-        create_symbol()
-        create_symbol()
+        create_symbol(name='LINKBTC')
+        create_symbol(name='ADABUSD')
 
         res = self.client.get(SYMBOLS_URL)
 
@@ -90,7 +90,7 @@ class PrivateSymbolAPITests(TestCase):
     def test_create_symbol(self) -> None:
         """Test creating a symbol via API"""
         payload = {
-            'name': 'BTCUSDT',
+            'name': 'LTCBTC',
             'last_price': Decimal('0'),
         }
         res = self.client.post(SYMBOLS_URL, payload)
@@ -101,7 +101,7 @@ class PrivateSymbolAPITests(TestCase):
 
     def test_update(self) -> None:
         """Test uptade of a symbol."""
-        symbol = create_symbol()
+        symbol = create_symbol(name='ADALTC')
         payload = {'name': 'LTCBTC'}
         url = symbol_detail_url(symbol.id)  # type: ignore
         res = self.client.patch(url, payload)
@@ -160,7 +160,7 @@ class PrivateAlertAPITests(TestCase):
     def test_create_alert(self) -> None:
         """Test creating an alert via API"""
         payload = {
-            'symbol': 'BTCUSDT',
+            'symbol': 'ADABTC',
             'price': Decimal('25000'),
             'condition': 'above',
         }
