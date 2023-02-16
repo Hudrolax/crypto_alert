@@ -36,7 +36,7 @@ def send_alerts() -> None:
             if send_telegram_message(alert.user.telegram_id, message):
                 alert_sended = True
         if core_settings.send_alert_via_email:
-            if alert.user.telegram_id == 'test' or send_mail.send(
+            if alert.user.telegram_id == 'test' or send_mail(
                 emails=[alert.user.email], 
                 subject='Crypto alert!',
                 content=message,
